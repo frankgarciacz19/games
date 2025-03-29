@@ -1,0 +1,739 @@
+<!DOCTYPE html><html lang="es"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src *; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desata tu Creatividad</title>
+    <style>
+        :root {
+            --chispas-color: #FF5252;
+            --chispas-light: #FFECEC;
+            --chispas-dark: #C50000;
+            --elastico-color: #4CAF50;
+            --elastico-light: #E8F5E9;
+            --elastico-dark: #2E7D32;
+            --futuro-color: #2196F3;
+            --futuro-light: #E3F2FD;
+            --futuro-dark: #0D47A1;
+            --historias-color: #9C27B0;
+            --historias-light: #F3E5F5;
+            --historias-dark: #6A1B9A;
+            --background: #f8f9ff;
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 82, 82, 0.05) 0%, transparent 50%), 
+                radial-gradient(circle at 75% 25%, rgba(76, 175, 80, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 25% 75%, rgba(33, 150, 243, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(156, 39, 176, 0.05) 0%, transparent 50%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+        
+        .title-container {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #FF5252, #4CAF50, #2196F3, #9C27B0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGradient 8s ease infinite;
+            background-size: 300% 300%;
+        }
+        
+        @keyframes titleGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 1200px;
+            perspective: 1000px;
+        }
+        
+        .category-card {
+            width: 220px;
+            height: 320px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            border-radius: 16px;
+            animation: cardAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .category-card:nth-child(1) { animation-delay: 0.1s; }
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.3s; }
+        .category-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        .category-card:hover {
+            transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+            box-shadow: var(--card-hover-shadow);
+        }
+        
+        .category-card:active {
+            transform: translateY(-5px);
+            transition: transform 0.1s;
+        }
+        
+        .card-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 20px;
+            overflow: hidden;
+            background-size: 200% 200%;
+            animation: gradientBackground 5s ease infinite;
+        }
+        
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .card-front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+        
+        .chispas .card-front {
+            background: linear-gradient(135deg, var(--chispas-color), var(--chispas-dark));
+            color: white;
+        }
+        
+        .elastico .card-front {
+            background: linear-gradient(135deg, var(--elastico-color), var(--elastico-dark));
+            color: white;
+        }
+        
+        .futuro .card-front {
+            background: linear-gradient(135deg, var(--futuro-color), var(--futuro-dark));
+            color: white;
+        }
+        
+        .historias .card-front {
+            background: linear-gradient(135deg, var(--historias-color), var(--historias-dark));
+            color: white;
+        }
+        
+        .card-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-description {
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 90%;
+            opacity: 0.9;
+        }
+        
+        #result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .result-card {
+            width: 320px;
+            height: 450px;
+            background-color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+        }
+        
+        .result-card.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .result-header {
+            height: 120px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatIcon {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .result-category {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .result-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .result-close:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .result-content {
+            padding: 25px;
+            height: calc(100% - 120px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-question {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .result-description {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .result-card-chispas .result-header {
+            background: linear-gradient(135deg, var(--chispas-color), var(--chispas-dark));
+        }
+        
+        .result-card-elastico .result-header {
+            background: linear-gradient(135deg, var(--elastico-color), var(--elastico-dark));
+        }
+        
+        .result-card-futuro .result-header {
+            background: linear-gradient(135deg, var(--futuro-color), var(--futuro-dark));
+        }
+        
+        .result-card-historias .result-header {
+            background: linear-gradient(135deg, var(--historias-color), var(--historias-dark));
+        }
+        
+        .result-card-chispas .result-question {
+            color: var(--chispas-dark);
+        }
+        
+        .result-card-elastico .result-question {
+            color: var(--elastico-dark);
+        }
+        
+        .result-card-futuro .result-question {
+            color: var(--futuro-dark);
+        }
+        
+        .result-card-historias .result-question {
+            color: var(--historias-dark);
+        }
+        
+        .deck-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .new-card-button {
+            background: linear-gradient(45deg, #FF5252, #4CAF50, #2196F3, #9C27B0);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            background-size: 300% 300%;
+            animation: titleGradient 8s ease infinite;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .new-card-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .new-card-button:active {
+            transform: translateY(-2px);
+        }
+        
+        .category-indicator {
+            position: absolute;
+            bottom: 15px;
+            width: 60%;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 5px 0;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            backdrop-filter: blur(5px);
+        }
+        
+        @media (max-width: 960px) {
+            .card-container {
+                gap: 20px;
+            }
+            
+            .category-card {
+                width: 180px;
+                height: 260px;
+            }
+            
+            .card-icon {
+                font-size: 4rem;
+            }
+            
+            .card-title {
+                font-size: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .card-container {
+                gap: 15px;
+            }
+            
+            .category-card {
+                width: 160px;
+                height: 230px;
+            }
+            
+            .card-icon {
+                font-size: 3.5rem;
+            }
+            
+            .result-card {
+                width: 300px;
+                height: 430px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-container {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .category-card {
+                width: 150px;
+                height: 220px;
+            }
+            
+            .card-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+            
+            .card-title {
+                font-size: 1.1rem;
+            }
+            
+            .result-card {
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-container">
+        <h1>¡Desata tu Creatividad!</h1>
+        <p class="subtitle">Elige una categoría y descubre un desafío creativo aleatorio</p>
+    </div>
+    
+    <div class="card-container" id="card-container">
+        <!-- Cards will be generated by JavaScript -->
+    </div>
+    
+    <div class="deck-container">
+        <button id="new-card-button" class="new-card-button">
+            <span>🔄</span> Nuevas cartas
+        </button>
+    </div>
+    
+    <div id="result-overlay">
+        <div class="result-card" id="result-card">
+            <div class="result-header">
+                <div class="result-icon" id="result-icon"></div>
+                <div class="result-category" id="result-category"></div>
+                <div class="result-number" id="result-number"></div>
+                <button class="result-close" id="result-close">×</button>
+            </div>
+            <div class="result-content">
+                <div class="result-question" id="result-question"></div>
+                <div class="result-description" id="result-description"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Definir las categorías y sus desafíos
+        const categories = {
+            chispas: {
+                name: "Chispas de Identidad",
+                icon: "✨",
+                color: "var(--chispas-color)",
+                challenges: [
+                    {
+                        number: "01",
+                        question: "¿Cómo te describirías con solo 6 palabras?",
+                        description: "Imagina que solo puedes elegir 6 palabras para presentarte en una entrevista intergaláctica. ¿Cuáles serían y por qué?"
+                    },
+                    {
+                        number: "02",
+                        question: "Si tu nombre fuera una emoción...",
+                        description: "¿Cuál sería? ¿Cómo se sentiría llevarlo en un mundo donde los nombres cambian según el estado de ánimo?"
+                    },
+                    {
+                        number: "03",
+                        question: "Dibuja tu personalidad como si fuera un mapa.",
+                        description: "Incluye montañas, ríos, ciudades o cualquier elemento que represente quién eres."
+                    },
+                    {
+                        number: "04",
+                        question: "Si fueras un superhéroe, ¿cuál sería tu poder más inesperado?",
+                        description: "Olvídate de volar o ser invisible. Piensa en una habilidad única."
+                    }
+                ]
+            },
+            elastico: {
+                name: "Pensamiento Elástico",
+                icon: "🧠",
+                color: "var(--elastico-color)",
+                challenges: [
+                    {
+                        number: "05",
+                        question: "Inventa una nueva palabra y define su significado.",
+                        description: "Imagina que puedes agregar una palabra completamente nueva al idioma."
+                    },
+                    {
+                        number: "06",
+                        question: "Si el tiempo funcionara diferente...",
+                        description: "Imagina un mundo donde los días duran 48 horas. Piensa en cómo afectaría nuestra rutina, los estudios, el trabajo o el descanso."
+                    },
+                    {
+                        number: "07",
+                        question: "Dibuja un objeto cotidiano con un uso completamente distinto.",
+                        description: "Ejemplo: Un paraguas que sirva para cocinar."
+                    },
+                    {
+                        number: "08",
+                        question: "Si los colores fueran sabores...",
+                        description: "Imagina un mundo donde puedas probar los colores. ¿Qué sabor tendría el color azul? ¿Y el rojo?"
+                    }
+                ]
+            },
+            futuro: {
+                name: "Salto al Futuro",
+                icon: "🚀",
+                color: "var(--futuro-color)",
+                challenges: [
+                    {
+                        number: "09",
+                        question: "Describe un día en la vida de alguien en el año 2500.",
+                        description: "Las ciudades, la tecnología y la rutina han cambiado. ¿Cómo viviríamos en el futuro?"
+                    },
+                    {
+                        number: "10",
+                        question: "Diseña el transporte del futuro.",
+                        description: "¿Cómo se moverán las personas en 100 años? ¿Será volador, submarino o algo totalmente nuevo?"
+                    },
+                    {
+                        number: "11",
+                        question: "Si la comida pudiera cambiar tu estado de ánimo...",
+                        description: "¿Qué platillo elegirías para estar feliz? ¿Y para relajarte?"
+                    },
+                    {
+                        number: "12",
+                        question: "Si los animales fueran los dueños del mundo y los humanos sus mascotas...",
+                        description: "¿Cómo se vería nuestra rutina diaria?"
+                    }
+                ]
+            },
+            historias: {
+                name: "Historias en Explosión",
+                icon: "💥",
+                color: "var(--historias-color)",
+                challenges: [
+                    {
+                        number: "13",
+                        question: "Si los humanos tuvieran un sexto sentido...",
+                        description: "La percepción se expande más allá de lo que conocemos. ¿Qué sentido extra tendríamos y cómo nos ayudaría?"
+                    },
+                    {
+                        number: "14",
+                        question: "Dibuja la casa más inusual que puedas imaginar.",
+                        description: "Tal vez sea invisible, tenga forma de árbol, tal vez tenga ruedas, flote o esté hecha de nubes."
+                    },
+                    {
+                        number: "15",
+                        question: "Si pudieras cambiar el final de un cuento clásico...",
+                        description: "Algunas historias podrían tener otro desenlace... ¿Cuál cambiarías y cómo lo harías diferente?"
+                    },
+                    {
+                        number: "16",
+                        question: "Escribe una carta para alguien del futuro.",
+                        description: "Imagina que alguien lo leerá en 100 años. Dile algo importante que deberían saber sobre el presente."
+                    }
+                ]
+            }
+        };
+        
+        // Generar las 4 cartas de categorías
+        function generateCategoryCards() {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = '';
+            
+            // Crear una carta para cada categoría
+            Object.keys(categories).forEach(categoryKey => {
+                const category = categories[categoryKey];
+                
+                const card = document.createElement('div');
+                card.className = `category-card ${categoryKey}`;
+                card.innerHTML = `
+                    <div class="card-front">
+                        <div class="card-icon">${category.icon}</div>
+                        <div class="card-title">${category.name}</div>
+                        <div class="card-description">Haz clic para descubrir un desafío</div>
+                        <div class="category-indicator">Categoria</div>
+                    </div>
+                `;
+                
+                // Añadir evento para mostrar una carta aleatoria de esa categoría
+                card.addEventListener('click', () => {
+                    showRandomChallenge(categoryKey);
+                });
+                
+                cardContainer.appendChild(card);
+            });
+        }
+        
+        // Mostrar un desafío aleatorio de una categoría específica
+        function showRandomChallenge(categoryKey) {
+            const category = categories[categoryKey];
+            // Seleccionar un desafío aleatorio de la categoría
+            const randomIndex = Math.floor(Math.random() * category.challenges.length);
+            const challenge = category.challenges[randomIndex];
+            
+            // Configurar la carta de resultado
+            const resultCard = document.getElementById('result-card');
+            resultCard.className = `result-card result-card-${categoryKey}`;
+            
+            document.getElementById('result-icon').textContent = category.icon;
+            document.getElementById('result-category').textContent = category.name;
+            document.getElementById('result-number').textContent = challenge.number;
+            document.getElementById('result-question').textContent = challenge.question;
+            document.getElementById('result-description').textContent = challenge.description;
+            
+            // Mostrar el overlay
+            const resultOverlay = document.getElementById('result-overlay');
+            resultOverlay.style.visibility = 'visible';
+            resultOverlay.style.opacity = '1';
+            
+            // Animar la carta
+            setTimeout(() => {
+                resultCard.classList.add('active');
+            }, 50);
+        }
+        
+        // Cerrar la carta de resultado
+        document.getElementById('result-close').addEventListener('click', () => {
+            const resultCard = document.getElementById('result-card');
+            resultCard.classList.remove('active');
+            
+            setTimeout(() => {
+                document.getElementById('result-overlay').style.visibility = 'hidden';
+                document.getElementById('result-overlay').style.opacity = '0';
+            }, 300);
+        });
+        
+        // También cerrar al hacer clic en el fondo
+        document.getElementById('result-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('result-overlay')) {
+                document.getElementById('result-close').click();
+            }
+        });
+        
+        // Botón para generar nuevas cartas (visualmente, porque solo hay 4 categorías)
+        document.getElementById('new-card-button').addEventListener('click', () => {
+            // Animación de desaparición
+            const cards = document.querySelectorAll('.category-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+            });
+            
+            // Regenerar las cartas después de la animación
+            setTimeout(() => {
+                generateCategoryCards();
+            }, 300);
+        });
+        
+        // Inicializar el juego
+        document.addEventListener('DOMContentLoaded', generateCategoryCards);
+    </script>
+
+
+</body></html>
